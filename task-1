@@ -1,0 +1,43 @@
+function getAllSumOfDigitsInString(strs) {
+    
+    const inputs = strs.split('\n')
+    return inputs.reduce(( sum, curr) => {
+        const newCurr = curr
+            .replaceAll("one", "on1e")
+            .replaceAll("two", "tw2wo")
+            .replaceAll("nine", "ni9ne")
+            .replaceAll("three", "thr3ee")
+            .replaceAll("five", "fi5ve")
+            .replaceAll("seven", "sev7en")
+        const regex1 = new RegExp(/(?:one|two|three|four|five|six|seven|eight|nine)/g)
+        const regex2 = new RegExp(/[0-9]/g)
+        const finalRegex = new RegExp(regex1.source + "|" + regex2.source, 'g')
+        const result = newCurr.match(finalRegex);
+        console.log(result)
+        
+        let first = getDigitFromStr(result[0]);
+        let last = getDigitFromStr(result[result.length - 1]);
+        return sum + Number( first + last )
+    }, 0)
+}
+
+
+function getDigitFromStr(str) {
+  const digitMap = new Map([
+        ["one", "1"],
+        ["two", "2"],
+        ["three", "3"],
+        ["four", "4"],
+        ["five", "5"],
+        ["six", "6"],
+        ["seven", "7"],
+        ["eight", "8"],
+        ["nine", "9"]
+    ]);
+
+    let result = str
+    if(isNaN( +result )) {
+        result = digitMap.get(str)
+    }
+    return result;
+}
