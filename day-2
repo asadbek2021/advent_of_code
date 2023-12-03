@@ -1,0 +1,92 @@
+//PART - 1
+
+function possibleGame(input) {
+    const games = input.split('\n');
+    let gamesIdsSum = 0;
+
+    games.forEach(game => {
+        const gameParts = game.split(':');
+        const gameId = getGameId(gameParts[0]);
+        const rounds = getRounds(gameParts[1]);
+        const isValid = checkForLimits(rounds);
+        if(isValid) {
+            gamesIdsSum += gameId
+        }
+    })
+    
+    return gamesIdsSum;
+}
+
+
+function getGameId(input) {
+    return +input.split(' ')[1];
+}
+
+function getRounds(input) {
+    return input.trim().split(';').map(round => round.trim())
+}
+
+function checkForLimits(rounds) {
+    const LIMITS = {red: 12, green: 13, blue: 14};
+    const cubesWithCounts = getCubeCounts(rounds);
+    let valid = true;
+    for (let i = 0; i < cubesWithCounts.length; i++ ) {
+        const cube = cubesWithCounts[i];
+
+        for(let j=0; j<Object.keys(cube).length; j++){
+            const key = Object.keys(cube)[j];
+            if(cube[key] > LIMITS[key]) {
+                valid =  false;
+                break;
+            } 
+        }
+    }
+    
+    return valid;
+}
+
+function getCubeCounts(rounds) {
+    return rounds.map(round => {
+        const cubes = round.split(',').map(cube => cube.trim());
+        const result = {};
+
+        cubes.forEach(cube => {
+            const [count, color] = cube.split(' ');
+            result[color] = +count
+        })
+        return result;
+    })
+}
+
+// PART - 2
+
+function possibleGame(input) {
+    const games = input.split('\n');
+    let powerSum = 0;
+
+    games.forEach(game => {
+        const gameParts = game.split(':');
+        const gameId = getGameId(gameParts[0]);
+        const rounds = getRounds(gameParts[1]);
+        const cubesWithMaxCounts = getCubeMaxCounts(rounds);
+        const power = Object.values(cubesWithMaxCounts).reduce((res, curr) => curr * res ,1)
+        powerSum += power;
+    })
+    
+    return powerSum;
+}
+
+function getCubeMaxCounts(rounds) {
+    const result = {red: 0, green:0, blue:0};
+    rounds.forEach(round => {
+        const cubes = round.split(',').map(cube => cube.trim());
+        
+        cubes.forEach(cube => {
+            const [count, color] = cube.split(' ');
+            if(result[color] < +count)
+            result[color] = +count
+        })
+    })
+    return result;
+}
+
